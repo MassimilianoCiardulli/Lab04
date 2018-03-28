@@ -11,7 +11,7 @@ import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Studente;
 
 public class CorsoDAO {
-
+	
 	/*
 	 * Ottengo tutti i corsi salvati nel Db
 	 */
@@ -38,6 +38,14 @@ public class CorsoDAO {
 
 				// Crea un nuovo JAVA Bean Corso
 				// Aggiungi il nuovo oggetto Corso alla lista corsi
+				
+				Corso c = new Corso();
+				c.setCodins(codins);
+				c.setNumeroCrediti(numeroCrediti);
+				c.setNome(nome);
+				c.setPeriodoDidattico(periodoDidattico);
+				
+				corsi.add(c);
 			}
 
 			return corsi;
@@ -69,5 +77,37 @@ public class CorsoDAO {
 		// TODO
 		// ritorna true se l'iscrizione e' avvenuta con successo
 		return false;
+	}
+
+	/**
+	 * Ottengo il codice insegnamento di un corso
+	 * @param String corso
+	 * @return String codins
+	 */
+	public String getCodinsByCorso(String corso) {
+		final String sql = "SELECT * FROM corso";
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+
+				String codins = rs.getString("codins");
+				String nome = rs.getString("nome");
+				
+				if(nome.toLowerCase().trim().equals(corso.toLowerCase().trim()))
+					return codins;
+				
+			}
+
+			return null;
+
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
 	}
 }
