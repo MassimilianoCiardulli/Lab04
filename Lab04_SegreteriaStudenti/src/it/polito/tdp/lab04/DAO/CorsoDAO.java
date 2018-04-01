@@ -98,12 +98,45 @@ public class CorsoDAO {
 				String codins = rs.getString("codins");
 				String nome = rs.getString("nome");
 				
-				if(nome.toLowerCase().trim().equals(corso.toLowerCase().trim()))
+				if(nome.equals(corso))
 					return codins;
 				
 			}
 
 			return null;
+
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+	}
+
+	public List<Corso> elencoCorsiFrequentatiDa(int matricola) {
+		// TODO Auto-generated method stub
+		final String sql = "SELECT * FROM corso as c WHERE codins IN(SELECT codins FROM iscrizione as i WHERE c.codins = i.codins AND i.matricola = ?)";
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			ResultSet rs = st.executeQuery();
+			List<Corso> ltemp = new LinkedList<Corso>();
+			
+			while (rs.next()) {
+
+				String codins = rs.getString("codins");
+				int crediti = rs.getInt("crediti");
+				String nome = rs.getString("nome");
+				int pd = rs.getInt("pd");	
+				Corso c = new Corso();
+				c.setCodins(codins);
+				c.setNumeroCrediti(crediti);
+				c.setNome(nome);
+				c.setPeriodoDidattico(pd);
+				ltemp.add(c);
+			}
+
+			return ltemp;
 
 		} catch (SQLException e) {
 			// e.printStackTrace();

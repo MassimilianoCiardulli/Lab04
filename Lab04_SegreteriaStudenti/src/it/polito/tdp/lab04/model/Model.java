@@ -28,6 +28,23 @@ public class Model {
 	}
 	
 	public List<Studente> getStudentiByCodins(String codins) {
-		return studenteDAO.getStudentiIscrittiAlCorso(codins);
+		List<Studente> ltemp = new LinkedList<Studente>(studenteDAO.getStudentiIscrittiAlCorso(codins));
+
+		return ltemp;
+	}
+	
+	/**
+	 * 
+	 * @param matricola
+	 * @return true se lo studente è presente, false altrimenti
+	 */
+	public boolean cercaStudenteByMatricola(int matricola) {
+		if(studenteDAO.getStudenteByMatricola(matricola)==null) 
+			return false;
+		return true;
+	}
+	public List<Corso> corsiFrequentatiDa(int matricola) {
+		// TODO Auto-generated method stub
+		return corsoDAO.elencoCorsiFrequentatiDa(matricola);
 	}
 }

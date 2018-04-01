@@ -107,23 +107,23 @@ public class StudenteDAO {
 			ResultSet res = st.executeQuery();
 			
 			while(res.next()) {
-				Studente stud = new Studente();
-				stud.setCds(res.getString("CDS"));
-				stud.setCognome(res.getString("cognome"));
-				stud.setNome(res.getString("nome"));
-				stud.setMatricola(res.getInt("matricola"));
-				studenti.add(stud);
-			}
+				
+				Studente s = new Studente();
+				s.setCognome(res.getString("cognome"));
+				s.setNome(res.getString("nome"));
+				s.setMatricola(res.getInt("matricola"));
+				s.setCds(codins);
+				studenti.add(s);			
+				
+			}conn.close();
 			
-			conn.close();
+			return studenti;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} 
-		
-		return studenti;
 		
 	}
 }
