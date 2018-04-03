@@ -68,7 +68,7 @@ public class SegreteriaStudentiController {
     		txtArea.setText("Errore: lo studente non esiste.");
     	}
     }
-   
+    
     @FXML
     void handleCercaIscritti(ActionEvent event) {
     	if(elencoCorsi.getValue()==null)
@@ -82,7 +82,12 @@ public class SegreteriaStudentiController {
     			return ;
     		}
     		
-    		List<Studente> ltemp = new LinkedList<Studente>(model.getStudentiByCodins(codins)); //PERCHE NON FUNZIONA?
+    		List<Studente> ltemp = new LinkedList<Studente>(); //PERCHE NON FUNZIONA?
+    		for(Studente s:model.getStudentiByCodins(codins)) {
+    			System.out.println(s.toString());
+    			ltemp.add(s);
+    		}
+    			
     		
     		for(Studente s:ltemp) {
     		
@@ -121,7 +126,11 @@ public class SegreteriaStudentiController {
     	}
     	
     }
+    
+    @FXML
+    void handleElenco(ActionEvent event) {
 
+    }
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert elencoCorsi != null : "fx:id=\"elencoCorsi\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";

@@ -3,6 +3,7 @@ package it.polito.tdp.lab04.model;
 import java.util.*;
 
 import it.polito.tdp.lab04.DAO.*;
+import it.polito.tdp.lab04.controller.SegreteriaStudentiController;
 
 public class Model {
 	private List<Corso> corsi ;
@@ -28,9 +29,9 @@ public class Model {
 	}
 	
 	public List<Studente> getStudentiByCodins(String codins) {
-		List<Studente> ltemp = new LinkedList<Studente>(studenteDAO.getStudentiIscrittiAlCorso(codins));
-
-		return ltemp;
+		studenti = new LinkedList<Studente>(studenteDAO.getStudentiIscrittiAlCorso(codins));
+		
+		return studenti;
 	}
 	
 	/**
