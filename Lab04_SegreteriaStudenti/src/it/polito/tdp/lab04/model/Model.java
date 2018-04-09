@@ -3,17 +3,12 @@ package it.polito.tdp.lab04.model;
 import java.util.*;
 
 import it.polito.tdp.lab04.DAO.*;
-import it.polito.tdp.lab04.controller.SegreteriaStudentiController;
 
 public class Model {
-	private List<Corso> corsi ;
-	private List<Studente> studenti ;
 	private CorsoDAO corsoDAO ;
 	private StudenteDAO studenteDAO ;
 	
 	public Model() {
-		this.corsi = new ArrayList<Corso>();
-		this.studenti = new ArrayList<Studente>();
 		this.corsoDAO = new CorsoDAO();
 		this.studenteDAO = new StudenteDAO();
 	}
@@ -29,15 +24,13 @@ public class Model {
 	}
 	
 	public List<Studente> getStudentiByCodins(String codins) {
-		studenti = new LinkedList<Studente>(studenteDAO.getStudentiIscrittiAlCorso(codins));
-		
-		return studenti;
+		return studenteDAO.getStudentiIscrittiAlCorso(codins);
 	}
 	
 	/**
 	 * 
 	 * @param matricola
-	 * @return true se lo studente è presente, false altrimenti
+	 * @return true se lo studente è presente nel database, false altrimenti
 	 */
 	public boolean cercaStudenteByMatricola(int matricola) {
 		if(studenteDAO.getStudenteByMatricola(matricola)==null) 
@@ -47,5 +40,9 @@ public class Model {
 	public List<Corso> corsiFrequentatiDa(int matricola) {
 		// TODO Auto-generated method stub
 		return corsoDAO.elencoCorsiFrequentatiDa(matricola);
+	}
+	public boolean iscrittoONo(String codins, int m) {
+		// TODO Auto-generated method stub
+		return corsoDAO.iscrittoONo(m, codins);
 	}
 }

@@ -50,6 +50,7 @@ public class SegreteriaStudentiController {
     @FXML
     void handleCercaCorsi(ActionEvent event) {
     	int matricola = 0;
+    	
     	try {
     		matricola = Integer.parseInt(txtMatricola.getText());
     	}catch(Exception e) {
@@ -58,10 +59,20 @@ public class SegreteriaStudentiController {
     	}
     	
     	if(model.cercaStudenteByMatricola(matricola)) {
-    		List<Corso> ltemp = new LinkedList<Corso>(model.corsiFrequentatiDa(matricola)); //PERCHE NON FUNZIONA?
     		
-    		for(Corso c:ltemp)
-    			txtArea.appendText(c.toString() + "\n");
+    		List<Corso> ltemp = new LinkedList<Corso>(model.corsiFrequentatiDa(matricola));
+    		
+    		if(ltemp.isEmpty()){
+    			txtArea.setText("Lo studente non è iscritto a nessun corso.");
+    			return ;
+    		}
+    		
+    		txtArea.setText("");
+    		
+    		for(Corso c:ltemp) {
+    			txtArea.appendText(c.getCodins() + "\t\t\t" + c.getNumeroCrediti() + "\t\t\t" + c.getNome() + "\t\t\t" + c.getPeriodoDidattico() + "\n");
+    		}
+    		
     		
     	}
     	else {
@@ -71,30 +82,52 @@ public class SegreteriaStudentiController {
     
     @FXML
     void handleCercaIscritti(ActionEvent event) {
-    	if(elencoCorsi.getValue()==null)
+    	
+    	if(elencoCorsi.getValue()==null) //Se non ho selezionato un corso
     		this.txtArea.setText("Errore: seleziona un corso.");
+    	
     	else {
     		String corso = elencoCorsi.getValue();
-    		String codins = model.getCodIns(corso);
     		
-    		if(model.getStudentiByCodins(codins).isEmpty()) {
-    			txtArea.setText("Non ci sono studenti iscritti al corso.");
+    		try {
+    			String matricola = txtMatricola.getText();
+    			int m = Integer.parseInt(matricola);
+    			
+    			if(matricola!=null) {
+    				String codins = model.getCodIns(corso);
+    				boolean iscritto = model.iscrittoONo(codins, m);
+    				if(iscritto) {
+    					txtArea.setText("Studente già iscritto a questo corso.");   					
+    				}
+    				else {
+    					txtArea.setText("Studente non iscritto a questo corso");
+    				}
+    			}
+   
+    			return ;
+    			
+    		}catch(NullPointerException npe) {
+    			
+    		}catch(NumberFormatException nfe) {
+    			txtArea.setText("Errore: la matricola deve essere un codice identificativo numerico.");
     			return ;
     		}
-    		
-    		List<Studente> ltemp = new LinkedList<Studente>(); //PERCHE NON FUNZIONA?
-    		for(Studente s:model.getStudentiByCodins(codins)) {
-    			System.out.println(s.toString());
-    			ltemp.add(s);
-    		}
-    			
-    		
-    		for(Studente s:ltemp) {
-    		
-    			txtArea.appendText(s.toString() + "\n");
-    		}
-    		
-    	}
+    			String codins = model.getCodIns(corso);
+        		
+        		List<Studente> ltemp = new LinkedList<Studente>(model.getStudentiByCodins(codins)); 
+        		
+        		if(ltemp.isEmpty()) {
+        			txtArea.setText("Non ci sono studenti iscritti al corso.");
+        			return ;
+        		}
+        		
+        		txtArea.setText("");
+        		    
+        		for(Studente s:ltemp) {
+        		
+        			txtArea.appendText(s.getMatricola() + "\t\t\t"+ s.getNome() + "\t\t\t"+ s.getCognome() +"\t\t\t" +s.getCds() + "\n"); //come allineare i dati?
+        		}
+    	}	
     }
 
     @FXML
@@ -122,6 +155,8 @@ public class SegreteriaStudentiController {
     		}
     	}catch(Exception e) {
     		txtArea.setText("Errore: la matricola deve essere un codice identificativo numerico.");
+    		txtNome.setText("");
+    		txtCognome.setText("");
     		return ;
     	}
     	
@@ -131,6 +166,7 @@ public class SegreteriaStudentiController {
     void handleElenco(ActionEvent event) {
 
     }
+    
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert elencoCorsi != null : "fx:id=\"elencoCorsi\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";

@@ -13,7 +13,7 @@ import it.polito.tdp.lab04.model.Studente;
 public class CorsoDAO {
 	
 	/*
-	 * Ottengo tutti i corsi salvati nel Db
+	 * Ottengo l'elenco di tutti i corsi salvati nel Db
 	 */
 	public List<Corso> getTuttiICorsi() {
 
@@ -56,6 +56,7 @@ public class CorsoDAO {
 		}
 	}
 
+	
 	/*
 	 * Dato un codice insegnamento, ottengo il corso
 	 */
@@ -69,6 +70,8 @@ public class CorsoDAO {
 	public void getStudentiIscrittiAlCorso(Corso corso) {
 		// TODO
 	}
+	
+	
 
 	/*
 	 * Data una matricola ed il codice insegnamento, iscrivi lo studente al corso.
@@ -78,6 +81,7 @@ public class CorsoDAO {
 		// ritorna true se l'iscrizione e' avvenuta con successo
 		return false;
 	}
+	
 
 	/**
 	 * Ottengo il codice insegnamento di un corso
@@ -110,7 +114,12 @@ public class CorsoDAO {
 			throw new RuntimeException("Errore Db");
 		}
 	}
-
+	
+	/**
+	 * Ottengo l'elenco dei corsi frequentati da uno studente
+	 * @param matricola
+	 * @return Lista dei corsi
+	 */
 	public List<Corso> elencoCorsiFrequentatiDa(int matricola) {
 		// TODO Auto-generated method stub
 		final String sql = "SELECT * FROM corso as c WHERE codins IN(SELECT codins FROM iscrizione as i WHERE c.codins = i.codins AND i.matricola = ?)";
@@ -118,6 +127,8 @@ public class CorsoDAO {
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
+			
+			st.setInt(1, matricola);
 
 			ResultSet rs = st.executeQuery();
 			List<Corso> ltemp = new LinkedList<Corso>();
@@ -135,8 +146,29 @@ public class CorsoDAO {
 				c.setPeriodoDidattico(pd);
 				ltemp.add(c);
 			}
-
+		
 			return ltemp;
+
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+	}
+	
+	public boolean iscrittoONo(int matricola, String codins) {
+		final String sql = "SELECT s.matricola, s.nome, cognome, c.codins FROM corso AS c, studente AS s, iscrizione AS i\n WHERE s.matricola = i.matricola AND c.codins = i.codins AND i.matricola = ? AND i.codins = ?";
+	
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, matricola);
+			st.setString(2, codins);
+
+			ResultSet rs = st.executeQuery();
+
+			if(rs.getString("matricola")==null)
+				return false;
+			return true;
 
 		} catch (SQLException e) {
 			// e.printStackTrace();
